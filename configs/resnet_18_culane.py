@@ -92,15 +92,6 @@ model = dict(
         test_cfg = dict(conf_threshold=0.4)),
      train_cfg = None,
      test_cfg = None
-    # training and testing settings
-    # train_cfg=dict(
-    #     assigner=dict(
-    #         type='HungarianAssigner',
-    #         match_costs=[
-    #             dict(type='FocalLossCost', weight=2., eps=1e-8),
-    #             dict(type='BBoxL1Cost', weight=5.0, box_format='xywh'),
-    #             dict(type='IoUCost', iou_mode='giou', weight=2.0)
-    #         ])),
     )
 
 # optimizer
