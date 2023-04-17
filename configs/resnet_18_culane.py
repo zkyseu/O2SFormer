@@ -97,15 +97,6 @@ model = dict(
         test_cfg = dict(conf_threshold=0.5)),
      train_cfg = None,
      test_cfg = None
-    # training and testing settings
-    # train_cfg=dict(
-    #     assigner=dict(
-    #         type='HungarianAssigner',
-    #         match_costs=[
-    #             dict(type='FocalLossCost', weight=2., eps=1e-8),
-    #             dict(type='BBoxL1Cost', weight=5.0, box_format='xywh'),
-    #             dict(type='IoUCost', iou_mode='giou', weight=2.0)
-    #         ])),
     )
 
 # optimizer
@@ -127,15 +118,6 @@ runner = dict(
     type='EpochBasedRunner', max_epochs=max_epochs)
 
 # learning rate
-#lr_config = dict(
-#    policy='YOLOX',
-#    warmup='exp',
-#    by_epoch=False,
-#    warmup_by_epoch=True,
-#    warmup_ratio=1,
-#    warmup_iters=5,  # 5 epoch
-#    num_last_epochs=1,
-#    min_lr_ratio=0.05)
 lr_config = dict(
     policy='CosineAnnealing',
     by_epoch=False,
