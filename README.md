@@ -1,5 +1,37 @@
 # O2SFormer
 Pytorch implementation of the paper "End-to-End Lane detection with One to Several Transformer". We will update instruction of our work soon.
 
+# News
+[2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture. Pretrain weight is coming soon!
+
+## Installation
+<details>
+  <summary>Installation</summary>
+  
+  We construct the code of O2SFormer based on mmdetection. 
+  We test our models under ```python=3.7.13,pytorch=1.12.1,cuda=10.2,mmdet=2.28.2,mmcv=1.7.1```. Other versions might be available as well. Click the `Details` below for more details.
+
+   1. Clone this repo
+   ```sh
+   git clone https://github.com/zkyseu/O2SFormer.git
+   cd O2SFormer
+   ```
+
+   2. Install Pytorch and torchvision
+
+   Follow the instruction on https://pytorch.org/get-started/locally/.
+   ```sh
+   # an example:
+   conda install -c pytorch pytorch torchvision
+   ```
+
+   3. Install other needed packages
+   ```sh
+   pip install -r requirements.txt
+   # Note: If you meet errors when install mmdetection or mmcv, we suggset you can refer to mmdetection repo for more details
+   ```
+
+</details>
+
 ## Acknowledgement
 * Our project is based on mmdetection and CLRNet, thanks for their great work!
