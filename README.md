@@ -33,5 +33,30 @@ Pytorch implementation of the paper "End-to-End Lane detection with One to Sever
 
 </details>
 
+## Data
+
+<details>
+  <summary>Data</summary>
+
+ In our paper, we use three popular datasets: CULane, Tusimple and LLAMAS
+  
+Please download [CULane](https://xingangpan.github.io/projects/CULane.html) dataset. Unzip data to `$CULANEROOT` and then create `$data` directory
+  
+  
+```Shell
+cd $LANEDET_ROOT
+mkdir -p data
+ln -s $CULANEROOT data/CULane
+```
+  
+Organize the CULane as following: 
+```
+$CULANEROOT/driver_xx_xxframe    # data folders x6
+$CULANEROOT/laneseg_label_w16    # lane segmentation labels
+$CULANEROOT/list                 # data lists
+```
+
+</details>
+
 ## Acknowledgement
 * Our project is based on mmdetection and CLRNet, thanks for their great work!
