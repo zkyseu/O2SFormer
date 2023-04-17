@@ -17,6 +17,7 @@ from mmdet.core.bbox.builder import build_assigner,build_sampler
 from .transformer_utils import MLP
 from .utils.general_utils import ConfigType
 from .lane import Lane
+from .losses.lane_iou import line_iou
 
 class MLP_(MLP):
     def forward(self, x: Tensor) -> Tensor:
@@ -209,15 +210,16 @@ class DNHeadv2(BaseModule):
         final_pred_list = [pred for pred in final_pred]
         targets_list = [target for target in targets]
         ota_matched_col_inds,ota_matched_row_inds,match_col_inds,match_row_inds,is_empty_list = multi_apply(self.gengeral_label_assign,final_pred_list,targets_list)
+        line_iou_list = multi_apply(self.get_iou_sim,final_pred_list,targets_list,ota_matched_row_inds,ota_matched_col_inds,match_row_inds,is_empty_list)[0]
         
         for idx,predictions_layer in enumerate(prediction): # 遍历所有num_layer
             is_last = (idx == num_layers-1)
-            scale_factor = ((num_layers-1-idx)/(num_layers-1))*0.8
+            scale_factor = ((num_layers-1-idx)/(num_layers-1))
             scale_factor_list = [scale_factor for pred in predictions_layer]
             predictions_layer = [pred for pred in predictions_layer] # 遍历所有batchsize
             is_last_list = [True if is_last else False for pred in predictions_layer]
             if not is_last:
-                assigned_labels = multi_apply(self.get_assign_score,predictions_layer,ota_matched_row_inds,match_row_inds,is_last_list,is_empty_list,scale_factor_list)[0]
+                assigned_labels = multi_apply(self.get_assign_score,predictions_layer,ota_matched_row_inds,match_row_inds,is_last_list,is_empty_list,scale_factor_list,line_iou_list)[0]
                 cls_loss_list,reg_xytl_loss_list,iou_loss_list = multi_apply(self.loss_single_bs,predictions_layer,targets_list,ota_matched_row_inds,ota_matched_col_inds,assigned_labels)
             else:
                 assigned_labels = multi_apply(self.get_assign_score,predictions_layer,match_row_inds,match_row_inds,is_last_list,is_empty_list)[0]
@@ -286,13 +288,28 @@ class DNHeadv2(BaseModule):
         return cls_loss,reg_xytl_loss,iou_loss
 
     @torch.no_grad()
+    def get_iou_sim(self,predictions:Tensor,target:Tensor,ota_matched_row_inds,ota_matched_col_inds,match_row_inds,is_empty):
+        if is_empty:
+            return predictions.new_zeros((predictions.shape[0],))
+        target = target.clone()
+        target = target[target[:, 1] == 1]
+        target = target[ota_matched_col_inds,6:]
+        
+        predictions = predictions.clone()
+        reg_pred_line = predictions[ota_matched_row_inds,6:]*self.img_w
+        line_iou_ = F.sigmoid(line_iou(reg_pred_line,target,self.img_w))
+
+        return [line_iou_]
+
+    @torch.no_grad()
     def get_assign_score(self,
                          prediction: Tensor,
                          ota_matched_row_inds,
                          match_row_inds,
                          is_last = False,
                          is_empty = False,
-                         scale_factor = 1.,):
+                         scale_factor = 1.,
+                         line_iou = 1.):
         """
         为每个layer分配pred score
         """
@@ -303,9 +320,11 @@ class DNHeadv2(BaseModule):
         if not is_last:
             ota_assigned_pred_score = F.sigmoid(prediction[..., :2])[ota_matched_row_inds, 1]
             max_score_,indice = ota_assigned_pred_score.max(-1)
+            assigned_score[ota_matched_row_inds] = line_iou
+            mask_assigned_score = assigned_score[match_row_inds].clone()
             ota_assigned_scale_pred_score = (ota_assigned_pred_score/max_score_)*scale_factor
-            assigned_score[ota_matched_row_inds] = ota_assigned_scale_pred_score
-            assigned_score[match_row_inds] = 1.
+            assigned_score[ota_matched_row_inds] *= ota_assigned_scale_pred_score
+            assigned_score[match_row_inds] = mask_assigned_score 
         else:
             assigned_score[match_row_inds] = 1.
             

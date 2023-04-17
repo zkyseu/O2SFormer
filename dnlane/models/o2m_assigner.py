@@ -7,7 +7,7 @@ from mmdet.core.bbox.match_costs.builder import build_match_cost
 
 from .losses.lane_iou import line_iou
 
-def dynamic_k_assign(cost, pair_wise_ious,n_candidate_k=7,min_candidate = 2):
+def dynamic_k_assign(cost, pair_wise_ious,n_candidate_k=4,min_candidate = 2):
     """
     This file is borrowed from https://github.com/Turoad/CLRNet/blob/main/clrnet/models/utils/dynamic_assign.py
     Assign grouth truths with priors dynamically for SimOTA
@@ -69,13 +69,13 @@ class One2ManyLaneAssigner(BaseAssigner):
         pair_wise_iou = line_iou(predictions[..., 6:].clone(), targets[..., 6:].clone(), img_w, aligned=False)
         ota_matched_row_inds, ota_matched_col_inds = dynamic_k_assign(cost, pair_wise_iou) # pred and target index
         cls_label = torch.unique(ota_matched_col_inds)
-        final_match_row_inds = hugpredictions.new_zeros(targets.shape[0]) #one2one assignment results
+        final_match_row_inds = hugpredictions.new_zeros(targets.shape[0])#one2one assignment results
         final_match_col_inds = hugpredictions.new_zeros(targets.shape[0])
         for cls in cls_label:
             cls = cls.item()
             aux_cost = cost[:,cls].clone()
             unmatch_cls_col = ota_matched_row_inds[ota_matched_col_inds != cls]
-            aux_cost[unmatch_cls_col] = 1000000
+            aux_cost[unmatch_cls_col] = 1000000000
             cls_col = ota_matched_col_inds==cls # label index
             cls_row = ota_matched_row_inds[cls_col] # pred index
             cost_cls = cost[cls_row][:,cls]

@@ -13,7 +13,7 @@ train_pipeline = [
     dict(
         type='GenerateLaneLine',
         keys=['img', 'lane_line', 'seg',],
-        img_info = (img_h,img_w),
+        img_info = (img_w,img_h),
         num_points = 72,
         max_lanes = 4,
         meta_keys = ['img_metas'],
@@ -53,7 +53,7 @@ test_pipeline = [
     dict(type='GenerateLaneLine',
          keys=['img',],
          meta_keys = ['img_metas'],
-         img_info = (img_h,img_w),
+         img_info = (img_w,img_h),
          num_points = 72,
          max_lanes = 4,
          transforms=[

@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 from torch import Tensor
 from mmdet.core.bbox.match_costs.builder import MATCH_COST
 from mmdet.core.bbox.match_costs import FocalLossCost
@@ -74,19 +75,18 @@ class FocalIOULossCost(FocalLossCost):
         cls_pred = cls_pred.sigmoid()
         pair_wise_iou = pair_wise_iou.clone()
         pair_wise_iou[pair_wise_iou<0] = 0.
-#        print("pair_wise_iou shape:",pair_wise_iou)
-#        print("cls pred shape:",cls_pred.shape)
-#        print("gt label shape:",gt_labels)
-#        neg_cost = -self.alpha*cls_pred.pow(self.gamma)*(1 - cls_pred + self.eps).log()
-#        pos_cost = -pair_wise_iou*(pair_wise_iou*(cls_pred + self.eps).log()+ \
-#                                   (1-pair_wise_iou)*(1 - cls_pred + self.eps).log())
-        neg_cost = -(1 - cls_pred + self.eps).log() * (
-            1 - self.alpha) * cls_pred.pow(self.gamma)
-        pos_cost = -(cls_pred + self.eps).log() * self.alpha * (
-            1 - cls_pred).pow(self.gamma)
-
-        cls_cost = pos_cost[:, gt_labels] - neg_cost[:, gt_labels] #[192,4]
-        return cls_cost * self.weight
+        num_query = cls_pred.shape[0]
+        num_gt = gt_labels.shape[0]
+        gt_onehot_label = (
+            F.one_hot(gt_labels.to(torch.int64),cls_pred.shape[-1]).float().unsqueeze(0).repeat(num_query, 1, 1))    
+        valid_pred_scores = cls_pred.unsqueeze(1).repeat(1, num_gt, 1)    
+        soft_label = gt_onehot_label * pair_wise_iou[..., None]
+        scale_factor = soft_label - valid_pred_scores
+        soft_cls_cost = F.binary_cross_entropy_with_logits(
+            valid_pred_scores, soft_label,
+            reduction='none') * scale_factor.abs().pow(2.0)
+        soft_cls_cost = soft_cls_cost.sum(dim=-1)
+        return soft_cls_cost * self.weight
 
     def __call__(self, cls_pred, gt_labels,pair_wise_iou=None):
         """

@@ -1,0 +1,7 @@
+tqdm
+mmdet==2.28.2
+mmcv==1.7.1
+p_tqdm
+shapely
+imgaug
+albumentations
