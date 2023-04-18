@@ -4,6 +4,57 @@ Pytorch implementation of the paper "End-to-End Lane detection with One to Sever
 # News
 [2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture. Pretrain weight is coming soon!
 
+## Model Zoo
+Pretrain weight is under preparing. 
+
+### Results on CULane
+<table>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>backbone</th>
+      <th>F1 score</th>
+      <th>Checkpoint</th>
+      <th>Where in <a href="https://arxiv.org/abs/2203.03605">Our Paper</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>O2SFormer</td>
+      <td>ResNet18</td>
+      <td>75.98</td>
+      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp/&nbsp<a href="https://pan.baidu.com/s/1St5rvfgfPwpnPuf_Oe6DpQ">BaiDu</a>&nbsp</td>
+      <td>Table 1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>O2SForme</td>
+      <td>ResNet34</td>
+      <td>49.4</td>
+      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp/&nbsp<a href="https://pan.baidu.com/s/1St5rvfgfPwpnPuf_Oe6DpQ">BaiDu</a>&nbsp;</td>
+      <td>Table 1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>O2SFormer</td>
+      <td>ResNet50</td>
+      <td>56.8</td>
+      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>O2SFormer</td>
+      <td>DLA34</td>
+      <td>57.3</td>
+      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
 ## Installation
 <details>
   <summary>Installation</summary>
