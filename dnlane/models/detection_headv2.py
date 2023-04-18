@@ -66,6 +66,7 @@ class DNHeadv2(BaseModule):
                  num_reg_fcs = 2,
                  num_points = 72,
                  seg_feat = 256,
+                 seg_decoder_feat = sum([64,128,256,512]),
                  sample_points=36,
                  assigner: ConfigType = dict(),
                  loss_cls: ConfigType = dict(
@@ -111,7 +112,7 @@ class DNHeadv2(BaseModule):
 
         self.seg_decoder = SegDecoder(self.img_h, self.img_w,
                                       num_classes + 1,
-                                      seg_feat,)
+                                      seg_decoder_feat,)
         self.cls_loss = build_loss(loss_cls)
         self.xyt_loss = build_loss(loss_xyt)
         self.iou_loss = build_loss(loss_iou)
@@ -185,7 +186,7 @@ class DNHeadv2(BaseModule):
         if self.training and seg_feature is not None:
             assert img_metas is not None
             resize_shape = img_metas[0]['img_metas']['image_shape']
-            seg_feature = F.interpolate(seg_feature,size=resize_shape,mode='bilinear',align_corners=False)
+#            seg_feature = F.interpolate(seg_feature,size=resize_shape,mode='bilinear',align_corners=False)
             seg = self.seg_decoder(seg_feature)
             output = {'prediction': predicition, 'seg': seg}
             return output
