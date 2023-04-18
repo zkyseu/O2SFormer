@@ -114,8 +114,9 @@ class DNLATR(BaseDetector):
             has shape (bs, dim, H, W).
         """
         x = self.backbone(batch_inputs)
-        x = self.neck(x)
-        return x
+        neck_input = [x[-1]]
+        output = self.neck(neck_input)
+        return output,x
 
     def pre_transformer(
             self,
@@ -269,7 +270,8 @@ class DNLATR(BaseDetector):
     
     def forward_transformer(self,
                             img_feats: Tuple[Tensor],
-                            img_metas) -> Dict:
+                            img_metas,
+                            batch_feature : Tuple[Tensor] = None,) -> Dict:
         """Forward process of Transformer, which includes four steps:
         'pre_transformer' -> 'encoder' -> 'pre_decoder' -> 'decoder'. We
         summarized the parameters flow of the existing DETR-like detector,
@@ -286,7 +288,17 @@ class DNLATR(BaseDetector):
             includes the `hidden_states` of the decoder output and may contain
             `references` including the initial and intermediate references.
         """
-        seg_feature = torch.cat(img_feats,dim=1)
+        batch_feature = list(batch_feature)
+        seg_feature = torch.cat([
+                F.interpolate(feature,
+                              size=[
+                                  batch_feature[0].shape[2],
+                                  batch_feature[0].shape[3]
+                              ],
+                              mode='bilinear',
+                              align_corners=False)
+                for feature in batch_feature
+            ],dim=1)        
         encoder_inputs_dict, decoder_inputs_dict = self.pre_transformer(
             img_feats, img_metas)
 
@@ -304,8 +316,8 @@ class DNLATR(BaseDetector):
     def forward_train(self, img, img_metas = None, **kwargs):
         targets = kwargs['lane_line']
         seg_targets = kwargs['seg']
-        img_feats = self.extract_feat(img)
-        head_inputs_dict = self.forward_transformer(img_feats,img_metas)
+        img_feats,batch_feature = self.extract_feat(img)
+        head_inputs_dict = self.forward_transformer(img_feats,img_metas,batch_feature)
         head_out = self.bbox_head(**head_inputs_dict)
         head_out.update({"targets":targets,"seg_targets":seg_targets})
         loss = self.bbox_head.loss(**head_out)
@@ -321,8 +333,8 @@ class DNLATR(BaseDetector):
     def predict(self,img, img_metas = None,**kwargs):
         img = img.cuda()
         img_metas = img_metas.data[0]
-        img_feats = self.extract_feat(img)
-        head_inputs_dict = self.forward_transformer(img_feats,img_metas)   
+        img_feats,batch_feature = self.extract_feat(img)
+        head_inputs_dict = self.forward_transformer(img_feats,img_metas,batch_feature)   
         out_head = self.bbox_head(**head_inputs_dict)
         output = self.bbox_head.get_lanes(out_head)
         return output
