@@ -36,7 +36,7 @@ Pytorch implementation of the paper "End-to-End Lane detection with One to Sever
 ## Data
 
 <details>
-  <summary>Data</summary>
+  <summary>1. CULane</summary>
 
  In our paper, we use three popular datasets: CULane, Tusimple and LLAMAS
   
@@ -55,6 +55,19 @@ $CULANEROOT/driver_xx_xxframe    # data folders x6
 $CULANEROOT/laneseg_label_w16    # lane segmentation labels
 $CULANEROOT/list                 # data lists
 ```
+
+</details>
+
+## Run
+
+<details>
+  <summary>1. Eval our pretrianed models</summary>
+
+  <!-- ### Eval our pretrianed model -->
+  Download our O2SFormer model checkpoint "checkpoint0011_4scale.pth" from [this link](https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing) and perform the command below. You can expect to get the final AP about 49.0.
+  ```sh
+  bash eval.sh /path/to/your/checkpoint
+  ```
 
 </details>
 
