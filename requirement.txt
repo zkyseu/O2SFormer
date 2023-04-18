@@ -5,3 +5,4 @@ p_tqdm
 shapely
 imgaug
 albumentations
+mmengine
