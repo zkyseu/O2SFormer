@@ -24,7 +24,7 @@ Pretrain weight is under preparing.
       <th>1</th>
       <td>O2SFormer</td>
       <td>ResNet18</td>
-      <td>75.98</td>
+      <td>76.07</td>
       <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp/&nbsp<a href="https://pan.baidu.com/s/1St5rvfgfPwpnPuf_Oe6DpQ">BaiDu</a>&nbsp</td>
       <td>Table 1</td>
     </tr>
