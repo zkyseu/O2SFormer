@@ -44,7 +44,7 @@ Pretrain weight is under preparing.
       <td>O2SFormer</td>
       <td>ResNet50</td>
       <td>77.83</td>
-      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp</td>
+      <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res50.pth">Weight</a>&nbsp</td>
       <td></td>
     </tr>
     <tr>
