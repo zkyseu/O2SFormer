@@ -45,7 +45,7 @@ class FocalLoss_py(FocalLoss):
                     num_classes = pred.size(1)
                     target = F.one_hot(target, num_classes=num_classes + 1)
                     target = target[:, :num_classes]
-                    calculate_loss_func = py_sigmoid_focal_loss
+                    calculate_loss_func = py_sigmoid_focal_lo
 
             loss_cls = self.loss_weight * calculate_loss_func(
                 pred,

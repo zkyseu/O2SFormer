@@ -202,8 +202,8 @@ class DNHeadv2(BaseModule):
 
         # we calculate three types loss
         cls_loss = 0
-        reg_xytl_loss = 0
-        iou_loss = 0
+        reg_xytl_loss = torch.tensor(0.).to(prediction.device)
+        iou_loss = torch.tensor(0.).to(prediction.device)
         num_layers = prediction.shape[0]
 
         # apply label assignment for each layer

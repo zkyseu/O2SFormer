@@ -11,7 +11,7 @@ img_w = 800
 img_h = 320
 cut_height = 270
 
-ckpt_timm = 'https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_weakly_supervised_resnet18-118f1556.pth'
+ckpt_timm = "https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_weakly_supervised_resnet18-118f1556.pth"
 model = dict(
     type='DNLATR',
     num_queries=192,
@@ -20,16 +20,22 @@ model = dict(
     num_patterns=0,
     max_lanes = num_classes,
     num_feat_layers = 3,
+#    backbone=dict(
+#        type='mmcls.TIMMBackbone',
+#        model_name='swsl_resnet18',
+#        features_only=True,
+#        pretrained=True,
+#        out_indices=(1, 2, 3, 4)),
     backbone=dict(
         type='ResNet',
-        depth=18,
+        depth=34,
         num_stages=4,
-        out_indices=(1,2,3),
+        out_indices=(0,1,2,3),
         frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=False),
         norm_eval=True,
         style='pytorch',
-        init_cfg=dict(type='Pretrained', checkpoint=ckpt_timm)),
+        init_cfg=dict(type='Pretrained', checkpoint="torchvision://resnet34")),
     neck=dict(
         type='ChannelMapper',
         in_channels=[512],
@@ -94,7 +100,7 @@ model = dict(
             loss_weight=2.0),
         loss_xyt = dict(type='SmoothL1Loss',loss_weight = 0.3),
         loss_iou=dict(type='Line_iou', loss_weight=2.0),
-        loss_seg = dict(type='CrossEntropyLoss',loss_weight=1.0,ignore_index=255),
+        loss_seg = dict(type='CrossEntropyLoss',loss_weight=1.0,ignore_index=255,class_weight=[0.4,1.,1.,1.,1.]),
         test_cfg = dict(conf_threshold=0.5)),
      train_cfg = None,
      test_cfg = None
@@ -110,13 +116,13 @@ model = dict(
     )
 
 # optimizer
-base_lr = 0.0001
+base_lr = 0.00025
 interval = 1
 eval_step = 1
 optimizer = dict(
     type='AdamW',
     lr=base_lr, 
-    weight_decay=0.00001,
+    weight_decay=0.0001,
     paramwise_cfg=dict(
         custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0)})
 )
@@ -128,27 +134,18 @@ runner = dict(
     type='EpochBasedRunner', max_epochs=max_epochs)
 
 # learning rate
-#lr_config = dict(
-#    policy='YOLOX',
-#    warmup='exp',
-#    by_epoch=False,
-#    warmup_by_epoch=True,
-#    warmup_ratio=1,
-#    warmup_iters=5,  # 5 epoch
-#    num_last_epochs=1,
-#    min_lr_ratio=0.05)
-lr_config = dict(policy='step', step=[10,44])
-#lr_config = dict(
-#    policy='CosineAnnealing',
-#    by_epoch=False,
-#    warmup='linear',
-#    warmup_iters=5500,
-#    warmup_ratio=0.01,
-#    min_lr=1e-08
-#     )
+lr_config = dict(
+    policy='CosineAnnealing',
+    by_epoch=False,
+    warmup='linear',
+    warmup_iters=2777,
+    warmup_ratio=0.01,
+    min_lr=1e-08
+     )
 
 
 checkpoint_config = dict(interval=interval)
+data = dict(samples_per_gpu=16)
 
 custom_hooks = [
     dict(

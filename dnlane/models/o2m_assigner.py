@@ -62,6 +62,7 @@ class One2ManyLaneAssigner(BaseAssigner):
         predictions[:, 6:] *= (img_w - 1)
 
         # classification cost and distance cost
+#        pair_wise_iou = line_iou(predictions[..., 6:].clone(), targets[..., 6:].clone(), img_w, aligned=False)
         cls_cost = self.cls_cost(predictions[:, :2], targets[:, 1].long())
         distance_cost = self.distance_cost(predictions,targets,img_w,img_h)
         cost = cls_cost+ distance_cost

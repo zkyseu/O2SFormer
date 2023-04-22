@@ -1,4 +1,3 @@
-# This file is mainly modified from DAB-DETR in mmdetection
 from typing import Tuple,Dict
 import cv2
 import os
@@ -13,17 +12,15 @@ from mmdet.models import build_backbone,build_head,build_neck
 from mmdet.models.builder import MODELS
 from mmengine.model import uniform_init
 
-from .transformer import (DABDetrTransformerDecoder,SinePositionalEncoding,
-                                  DABDetrTransformerEncoder, inverse_sigmoid)
+from .transformer import (DABDetrTransformerDecoder,SinePositionalEncoding,)
 from .utils.general_utils import COLORS
 
 @MODELS.register_module()
-class DNLATR(BaseDetector):
+class O2SFormer(BaseDetector):
     def __init__(self,
                  backbone,
                  neck,
                  head,
-                 encoder = None,
                  decoder = None,
                  num_queries = None,
                  offset_dim = None,
@@ -42,7 +39,6 @@ class DNLATR(BaseDetector):
         self.neck = build_neck(neck)
         self.bbox_head = build_head(head)
 
-        self.encoder = encoder
         self.decoder = decoder
         self.positional_encoding = positional_encoding
         self.num_queries = num_queries
@@ -52,9 +48,9 @@ class DNLATR(BaseDetector):
 
         self.positional_encoding = SinePositionalEncoding(
             **self.positional_encoding)
-        self.encoder = DABDetrTransformerEncoder(**self.encoder)
         self.decoder = DABDetrTransformerDecoder(**self.decoder)
-        self.embed_dims = self.encoder.embed_dims
+        self.embed_dims = self.neck.embed_dims
+        self.encoder_dice = self.neck.in_dice
         self.query_dim = self.decoder.query_dim
         self.n_offsets = self.bbox_head.n_offsets
         self.query_embedding = nn.Embedding(self.num_queries, self.query_dim)
@@ -65,13 +61,12 @@ class DNLATR(BaseDetector):
         assert num_feats * 2 == self.embed_dims, \
             f'embed_dims should be exactly 2 times of num_feats. ' \
             f'Found {self.embed_dims} and {num_feats}.'
-            
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
         self.init_weights()
-    
+
     def init_weights(self) -> None:
         """Initialize weights for query."""
         super(BaseDetector, self).init_weights()
@@ -114,14 +109,15 @@ class DNLATR(BaseDetector):
             has shape (bs, dim, H, W).
         """
         x = self.backbone(batch_inputs)
-        neck_input = [x[-1]]
+        neck_input = [x[dice] for dice in self.encoder_dice]
         output = self.neck(neck_input)
         return output,x
 
     def pre_transformer(
             self,
             img_feats: Tuple[Tensor],
-            img_metas) -> Tuple[Dict, Dict]:
+            img_metas,
+            meta_img) -> Tuple[Dict, Dict]:
         """Prepare the inputs of the Transformer.
         The forward procedure of the transformer is defined as:
         'pre_transformer' -> 'encoder' -> 'pre_decoder' -> 'decoder'
@@ -141,8 +137,9 @@ class DNLATR(BaseDetector):
               and 'memory_pos'.
         """
 
-        feat = img_feats[-1]  # NOTE img_feats contains only one feature.
+        feat = meta_img[-1]  # NOTE img_feats contains only one feature.
         batch_size, feat_dim, _, _ = feat.shape
+        feat_dim = img_feats.shape[2]
         # construct binary masks which for the transformer.
 
         batch_input_shape = img_metas[0]['img_metas']['image_shape']
@@ -163,41 +160,16 @@ class DNLATR(BaseDetector):
 
         # use `view` instead of `flatten` for dynamically exporting to ONNX
         # [bs, c, h, w] -> [bs, h*w, c]
-        feat = feat.view(batch_size, feat_dim, -1).permute(0, 2, 1)
-        pos_embed = pos_embed.view(batch_size, feat_dim, -1).permute(0, 2, 1)
+#        feat = feat.view(batch_size, feat_dim, -1).permute(0, 2, 1)
+        pos_embed = pos_embed.reshape(batch_size, feat_dim, -1).permute(0, 2, 1)
         # [bs, h, w] -> [bs, h*w]
         masks = masks.view(batch_size, -1)
 
         # prepare transformer_inputs_dict
-        encoder_inputs_dict = dict(
-            feat=feat, feat_mask=masks, feat_pos=pos_embed)
+        encoder_inputs_dict = None
         decoder_inputs_dict = dict(memory_mask=masks, memory_pos=pos_embed)
         return encoder_inputs_dict, decoder_inputs_dict
-    
-    def forward_encoder(self, feat: Tensor, feat_mask: Tensor,
-                        feat_pos: Tensor) -> Dict:
-        """Forward with Transformer encoder.
-        The forward procedure of the transformer is defined as:
-        'pre_transformer' -> 'encoder' -> 'pre_decoder' -> 'decoder'
-        More details can be found at `TransformerDetector.forward_transformer`
-        in `mmdet/detector/base_detr.py`.
-        Args:
-            feat (Tensor): Sequential features, has shape (bs, num_feat_points,
-                dim).
-            feat_mask (Tensor): ByteTensor, the padding mask of the features,
-                has shape (bs, num_feat_points).
-            feat_pos (Tensor): The positional embeddings of the features, has
-                shape (bs, num_feat_points, dim).
-        Returns:
-            dict: The dictionary of encoder outputs, which includes the
-            `memory` of the encoder output.
-        """
-        memory = self.encoder(
-            query=feat, query_pos=feat_pos,
-            key_padding_mask=feat_mask)  # for self_attn
-        encoder_outputs_dict = dict(memory=memory)
-        return encoder_outputs_dict
-    
+
     def pre_decoder(self, memory: Tensor) -> Tuple[Dict, Dict]:
         """Prepare intermediate variables before entering Transformer decoder,
         such as `query`, `query_pos`.
@@ -233,7 +205,7 @@ class DNLATR(BaseDetector):
             query_pos=query_pos, query=query, memory=memory,offset_points=offset_points)
         head_inputs_dict = dict()
         return decoder_inputs_dict, head_inputs_dict
-    
+
     def forward_decoder(self, query: Tensor, query_pos: Tensor, memory: Tensor,
                         memory_mask: Tensor, memory_pos: Tensor, offset_points: Tensor) -> Dict:
         """Forward with Transformer decoder.
@@ -267,7 +239,7 @@ class DNLATR(BaseDetector):
         head_inputs_dict = dict(
             hidden_states=hidden_states, references=references, offset_points = offset_points)
         return head_inputs_dict
-    
+
     def forward_transformer(self,
                             img_feats: Tuple[Tensor],
                             img_metas,
@@ -299,10 +271,10 @@ class DNLATR(BaseDetector):
                               align_corners=False)
                 for feature in batch_feature
             ],dim=1)        
-        encoder_inputs_dict, decoder_inputs_dict = self.pre_transformer(
-            img_feats, img_metas)
+        _, decoder_inputs_dict = self.pre_transformer(
+            img_feats, img_metas,batch_feature)
 
-        encoder_outputs_dict = self.forward_encoder(**encoder_inputs_dict)
+        encoder_outputs_dict = dict(memory=img_feats)
 
         tmp_dec_in, head_inputs_dict = self.pre_decoder(**encoder_outputs_dict)
         decoder_inputs_dict.update(tmp_dec_in)

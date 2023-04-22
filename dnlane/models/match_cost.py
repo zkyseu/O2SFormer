@@ -73,8 +73,7 @@ class FocalIOULossCost(FocalLossCost):
             torch.Tensor: cls_cost value with weight
         """
         cls_pred = cls_pred.sigmoid()
-        pair_wise_iou = pair_wise_iou.clone()
-        pair_wise_iou[pair_wise_iou<0] = 0.
+        pair_wise_iou = F.sigmoid(pair_wise_iou.clone())
         num_query = cls_pred.shape[0]
         num_gt = gt_labels.shape[0]
         gt_onehot_label = (
