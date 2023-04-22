@@ -5,9 +5,7 @@ Pytorch implementation of the paper "End-to-End Lane detection with One to Sever
 [2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture. Pretrain weight is coming soon!
 
 # Overview
-![Overview](fig/1.png "Overview")
-
-![Decoder](fig/2.png "Decoder")
+![Overview](fig/4.png "Overview")
 
 ## Model Zoo
 Pretrain weight is under preparing. 
