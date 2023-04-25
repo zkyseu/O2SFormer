@@ -151,4 +151,4 @@ Coming soon!
 
 ## Acknowledgement
 * Our project is based on mmdetection and CLRNet. Thanks for their great work!
-* We also thanks the PaddleDetection for providing the code of HybridEncoder.
+* We also thank the PaddleDetection for providing the code of HybridEncoder.
