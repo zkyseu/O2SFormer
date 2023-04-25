@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
+import mmcv
 from mmdet.models.detectors import BaseDetector
 from mmdet.models import build_backbone,build_head,build_neck
 from mmdet.models.builder import MODELS
@@ -315,6 +316,9 @@ class O2SFormer(BaseDetector):
         """
         Draw detection lane over image
         """
+        img = mmcv.imread(img)
+        lanes = lanes[0]
+        lanes = [lane.to_array(self.sample_y,self.bbox_head.ori_img_w,self.bbox_head.ori_img_h) for lane in lanes]
         lanes_xys = []
         for _, lane in enumerate(lanes):
             xys = []
@@ -324,7 +328,7 @@ class O2SFormer(BaseDetector):
                 x, y = int(x), int(y)
                 xys.append((x, y))
             lanes_xys.append(xys)
-        lanes_xys.sort(key=lambda xys : xys[0][0])
+        lanes_xys = [xys for xys in lanes_xys if xys!=[]]
 
         for idx, xys in enumerate(lanes_xys):
             for i in range(1, len(xys)):
@@ -335,8 +339,6 @@ class O2SFormer(BaseDetector):
             cv2.waitKey(0)
 
         if out_file:
-            if not osp.exists(osp.dirname(out_file)):
-                os.makedirs(osp.dirname(out_file))
             cv2.imwrite(out_file, img)
     
     def simple_test(self, img, img_metas, **kwargs):
