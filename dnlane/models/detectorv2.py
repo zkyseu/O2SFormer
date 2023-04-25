@@ -31,7 +31,8 @@ class O2SFormer(BaseDetector):
                  num_patterns = 0,
                  train_cfg = None,
                  test_cfg = None,
-                 left_prio = 1,                 
+                 left_prio = 1,  
+                 sample_y = range(589, 270, -8),  
                  **kwargs
                  ):
         super().__init__()
@@ -46,6 +47,7 @@ class O2SFormer(BaseDetector):
         self.num_patterns = num_patterns
         self.with_random_refpoints = with_random_refpoints
         self.left_prio = left_prio
+        self.sample_y = sample_y
 
         self.positional_encoding = SinePositionalEncoding(
             **self.positional_encoding)
