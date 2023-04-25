@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
+import mmcv
 from mmdet.models.detectors import BaseDetector
 from mmdet.models import build_backbone,build_head,build_neck
 from mmdet.models.builder import MODELS
@@ -33,7 +34,8 @@ class DNLATR(BaseDetector):
                  num_patterns = 0,
                  train_cfg = None,
                  test_cfg = None,
-                 left_prio = 1,                 
+                 left_prio = 1,   
+                 sample_y = range(589, 270, -8),              
                  **kwargs
                  ):
         super().__init__()
@@ -49,6 +51,7 @@ class DNLATR(BaseDetector):
         self.num_patterns = num_patterns
         self.with_random_refpoints = with_random_refpoints
         self.left_prio = left_prio
+        self.sample_y = sample_y
 
         self.positional_encoding = SinePositionalEncoding(
             **self.positional_encoding)
@@ -343,6 +346,9 @@ class DNLATR(BaseDetector):
         """
         Draw detection lane over image
         """
+        img = mmcv.imread(img)
+        lanes = lanes[0]
+        lanes = [lane.to_array(self.sample_y,self.bbox_head.ori_img_w,self.bbox_head.ori_img_h) for lane in lanes]
         lanes_xys = []
         for _, lane in enumerate(lanes):
             xys = []
@@ -352,7 +358,7 @@ class DNLATR(BaseDetector):
                 x, y = int(x), int(y)
                 xys.append((x, y))
             lanes_xys.append(xys)
-        lanes_xys.sort(key=lambda xys : xys[0][0])
+        lanes_xys = [xys for xys in lanes_xys if xys!=[]]
 
         for idx, xys in enumerate(lanes_xys):
             for i in range(1, len(xys)):
@@ -363,8 +369,6 @@ class DNLATR(BaseDetector):
             cv2.waitKey(0)
 
         if out_file:
-            if not osp.exists(osp.dirname(out_file)):
-                os.makedirs(osp.dirname(out_file))
             cv2.imwrite(out_file, img)
     
     def simple_test(self, img, img_metas, **kwargs):
