@@ -49,14 +49,15 @@ Pretrain weight is under preparing.
     </tr>
     <tr>
       <th>4</th>
-      <td>O2SFormer</td>
-      <td>DLA34</td>
-      <td>57.3</td>
+      <td>O2SFormer*</td>
+      <td>ResNet50</td>
+      <td>78.00</td>
       <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp</td>
       <td></td>
     </tr>
   </tbody>
 </table>
+Note: * represents that we replace the encoder with HybridEncoder in RT-DETR, which aggregates multi-scale features.
 
 ## Installation
 <details>
