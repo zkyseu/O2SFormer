@@ -1,8 +1,8 @@
 # O2SFormer
-Pytorch implementation of the paper "End-to-End Lane detection with One to Several Transformer". We will update instruction of our work soon.
+Pytorch implementation of our paper "End-to-End Lane detection with One to Several Transformer".
 
 # News
-[2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture. Pretrain weight is coming soon!
+[2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture.
 
 # Overview
 ![Overview](fig/4.png "Overview")
@@ -52,7 +52,7 @@ Pretrain weight is under preparing.
       <td>O2SFormer*</td>
       <td>ResNet50</td>
       <td>78.00</td>
-      <td><a href="https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing">Google Drive</a>&nbsp</td>
+      <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res50_hyb.pth">Weight</a>&nbsp</td>
       <td></td>
     </tr>
   </tbody>
@@ -64,7 +64,7 @@ Note: * represents that we replace the encoder with HybridEncoder in RT-DETR, wh
   <summary>Installation</summary>
   
   We construct the code of O2SFormer based on mmdetection. 
-  We test our models under ```python=3.7.13,pytorch=1.12.1,cuda=10.2,mmdet=2.28.2,mmcv=1.7.1```. Other versions might be available as well. Click the `Details` below for more details.
+  We test our models under ```python=3.7.13,pytorch=1.12.1,cuda=10.2,mmdet=2.28.2,mmcv=1.7.1```. It should be noted that mmdet<=2.28.x.
 
    1. Clone this repo
    ```sh
@@ -119,7 +119,7 @@ $CULANEROOT/list                 # data lists
   <summary>1. Eval our pretrianed models</summary>
 
   <!-- ### Eval our pretrianed model -->
-  Download our O2SFormer model checkpoint "checkpoint0011_4scale.pth" from [this link](https://drive.google.com/drive/folders/1qD5m1NmK0kjE5hh-G17XUX751WsEG-h_?usp=sharing) and perform the command below. You can expect to get the final AP about 49.0.
+  Download our O2SFormer model checkpoint with ResNet50 and perform the command below. You can expect to get the F1 about 77.80.
   ```sh
   bash eval.sh /path/to/your/checkpoint
   ```
@@ -150,4 +150,5 @@ Coming soon!
 </details>
 
 ## Acknowledgement
-* Our project is based on mmdetection and CLRNet, thanks for their great work!
+* Our project is based on mmdetection and CLRNet. Thanks for their great work!
+* We also thanks the PaddleDetection for providing the code of HybridEncoder.
