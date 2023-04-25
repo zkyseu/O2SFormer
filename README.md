@@ -119,7 +119,7 @@ $CULANEROOT/list                 # data lists
   <summary>1. Eval our pretrianed models</summary>
 
   <!-- ### Eval our pretrianed model -->
-  Download our O2SFormer model checkpoint with ResNet50 and perform the command below. You can expect to get the F1 about 77.80.
+  Download our O2SFormer model checkpoint with ResNet50 and perform the command below. You can expect to get the F1 score about 77.83.
   ```sh
   bash eval.sh /path/to/your/checkpoint
   ```
