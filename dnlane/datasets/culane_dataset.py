@@ -187,6 +187,8 @@ class CULaneDataset(CustomDataset):
                                                     os.path.join(self.data_root, cate_file),
                                                     iou_thresholds=[0.5],
                                                     official=True)
+            logger.info(f"cate:{cate_file}")
+            logger.info(f"result is :{result}")
 
         result = culane_metric.eval_predictions(output_basedir,
                                                 self.data_root,
