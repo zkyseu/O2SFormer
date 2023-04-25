@@ -152,6 +152,27 @@ We take the O2SFormer with ResNet34 as an example. You first download the weight
 
 </details>
 
+<details>
+  <summary>4. Compute MACs</summary>
+We provide the script to reproduce the macs of our model. You can run the code below to compute the macs. We take the O2SFormer with ResNet18 as an example.
+
+```sh
+python get_macs.py configs/resnet_18_culane.py --shape 295 820
+```
+
+After running the code, you will get the results as followed.
+
+```
+==============================
+Input shape: (3, 320, 832)
+Flops: 15.21 GFLOPs
+Params: 31.1 M
+==============================
+```
+
+
+</details>
+
 ## Acknowledgement
 * Our project is based on mmdetection and CLRNet. Thanks for their great work!
 * We also thank the PaddleDetection for providing the code of HybridEncoder.
