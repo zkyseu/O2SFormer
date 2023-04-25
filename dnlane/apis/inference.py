@@ -1,10 +1,13 @@
 import warnings
+import numpy as np
+import cv2
 
 import matplotlib.pyplot as plt
 import mmcv
 import torch
 from mmcv.parallel import collate, scatter
 from mmcv.runner import load_checkpoint
+from mmcv.parallel import DataContainer as DC
 
 from mmdet.core import get_classes
 from mmdet.datasets.pipelines import Compose
@@ -44,17 +47,23 @@ def init_detector(config, checkpoint=None, device='cuda:0'):
 
 
 class LoadImage(object):
-
+    def __init__(self,cut_height):
+        self.cut_height = cut_height
     def __call__(self, results):
         if isinstance(results['img'], str):
             results['filename'] = results['img']
         else:
             results['filename'] = None
         img = mmcv.imread(results['img'])
+        results['ori_shape'] = img.shape
+        img = img[self.cut_height:, :, :].astype(np.float32)
+        img = cv2.resize(img,(800,320),interpolation=cv2.INTER_CUBIC)
+        img = img.astype(np.float32) / 255.0
         results['img'] = img
         results['img_shape'] = img.shape
-        results['ori_shape'] = img.shape
+        results['img_metas'] = DC([{"img_metas":{'image_shape':(320,800)}}],cpu_only = True)
         return results
+
 
 
 def inference_detector(model, img):
@@ -70,7 +79,7 @@ def inference_detector(model, img):
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
     # build the data pipeline
-    test_pipeline = [LoadImage()] + cfg.data.test.pipeline[1:]
+    test_pipeline = [LoadImage(cut_height=cfg.cut_height)] + cfg.data.test.pipeline[1:]
     test_pipeline = Compose(test_pipeline)
     # prepare data
     data = dict(img=img)
@@ -85,8 +94,9 @@ def inference_detector(model, img):
         data['img_metas'] = data['img_metas'][0].data
 
     # forward the model
+    data["img_metas"] = DC(data["img_metas"],cpu_only = True)
     with torch.no_grad():
-        result = model(return_loss=False, rescale=True, **data)
+        result = model.predict(**data)
     return result
 
 
@@ -116,7 +126,7 @@ async def async_inference_detector(model, img):
     return result
 
 
-def show_result_pyplot(model, img, result, score_thr=0.3, fig_size=(15, 10)):
+def show_result_pyplot(model, img, result, show = False, out_file = 'save.jpg'):
     """Visualize the detection results on the image.
     Args:
         model (nn.Module): The loaded detector.
@@ -128,7 +138,4 @@ def show_result_pyplot(model, img, result, score_thr=0.3, fig_size=(15, 10)):
     """
     if hasattr(model, 'module'):
         model = model.module
-    img = model.show_result(img, result, score_thr=score_thr, show=False)
-    plt.figure(figsize=fig_size)
-    plt.imshow(mmcv.bgr2rgb(img))
-    plt.show()
+    model.show_result(img, result, out_file=out_file,show = show)
