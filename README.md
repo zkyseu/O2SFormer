@@ -34,7 +34,7 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
       <td>O2SForme</td>
       <td>ResNet34</td>
       <td>77.03</td>
-      <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res34.pth">weight</a></td>
+      <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res34.pth">Weight</a></td>
       <td>Table 1</td>
     </tr>
     <tr>
