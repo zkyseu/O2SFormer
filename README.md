@@ -157,7 +157,7 @@ We take the O2SFormer with ResNet34 as an example. You first download the weight
 We provide the script to reproduce the flops of our model. You can run the code below to compute the flops. We take the O2SFormer with ResNet18 as an example.
 
 ```sh
-python get_macs.py configs/resnet_18_culane.py --shape 295 820
+python get_macs.py configs/resnet_18_culane.py --shape 320 832
 ```
 
 After running the code, you will get the results as followed.
