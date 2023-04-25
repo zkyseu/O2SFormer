@@ -47,8 +47,9 @@ def init_detector(config, checkpoint=None, device='cuda:0'):
 
 
 class LoadImage(object):
-    def __init__(self,cut_height):
+    def __init__(self,cut_height,cfg):
         self.cut_height = cut_height
+        self.cfg = cfg
     def __call__(self, results):
         if isinstance(results['img'], str):
             results['filename'] = results['img']
@@ -57,11 +58,11 @@ class LoadImage(object):
         img = mmcv.imread(results['img'])
         results['ori_shape'] = img.shape
         img = img[self.cut_height:, :, :].astype(np.float32)
-        img = cv2.resize(img,(800,320),interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img,(self.cfg.img_w,self.cfg.img_h),interpolation=cv2.INTER_CUBIC)
         img = img.astype(np.float32) / 255.0
         results['img'] = img
         results['img_shape'] = img.shape
-        results['img_metas'] = DC([{"img_metas":{'image_shape':(320,800)}}],cpu_only = True)
+        results['img_metas'] = DC([{"img_metas":{'image_shape':(self.cfg.img_h,self.cfg.img_w)}}],cpu_only = True)
         return results
 
 
@@ -79,7 +80,7 @@ def inference_detector(model, img):
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
     # build the data pipeline
-    test_pipeline = [LoadImage(cut_height=cfg.cut_height)] + cfg.data.test.pipeline[1:]
+    test_pipeline = [LoadImage(cut_height=cfg.cut_height,cfg = cfg)] + cfg.data.test.pipeline[1:]
     test_pipeline = Compose(test_pipeline)
     # prepare data
     data = dict(img=img)
