@@ -342,6 +342,18 @@ class DNLATR(BaseDetector):
         output = self.bbox_head.get_lanes(out_head)
         return output
 
+    def forward_dummy(self, img):
+        """Used for computing network flops.
+        See `mmdetection/tools/analysis_tools/get_flops.py`
+        """
+        shape = img.shape[2:]
+        img_metas = [{"img_metas":{"image_shape":shape}}]
+        img_feats,batch_feature = self.extract_feat(img)
+        head_inputs_dict = self.forward_transformer(img_feats,img_metas,batch_feature)  
+        out_head = self.bbox_head(**head_inputs_dict)
+#        output = self.bbox_head.get_lanes(out_head)
+        return out_head
+
     def show_result(self,img, lanes, show=False, out_file=None, width=4):
         """
         Draw detection lane over image
