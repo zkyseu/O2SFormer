@@ -143,7 +143,7 @@ bash dist_train.sh /path/config num_gpus
 
 <details>
   <summary>3. Inference/Demo</summary>
-We take the O2SFormer with ResNet34 as an example. You first download the weight of the model and then run the following code to get the visualization result. Results are saved in save.jpg.
+We take the O2SFormer with ResNet34 as an example. You first download the weight of the model and then run the following code to get the visualization result. Result is saved in save.jpg.
 
 ```sh
  python infer_img.py configs/resnet_34_culane.py --checkpoint model_res34.pth --img_path /path/img
