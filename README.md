@@ -43,7 +43,7 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
       <td>ResNet50</td>
       <td>77.83</td>
       <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res50.pth">Weight</a>&nbsp</td>
-      <td></td>
+      <td>Table 1</td>
     </tr>
     <tr>
       <th>4</th>
@@ -51,7 +51,7 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
       <td>ResNet50</td>
       <td>78.00</td>
       <td><a href="https://github.com/zkyseu/O2SFormer/releases/download/weight/model_res50_hyb.pth">Weight</a>&nbsp</td>
-      <td></td>
+      <td>Table 1</td>
     </tr>
   </tbody>
 </table>
