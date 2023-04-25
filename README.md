@@ -91,7 +91,7 @@ Note: * represents that we replace the encoder with HybridEncoder in RT-DETR, wh
 <details>
   <summary>1. CULane</summary>
 
- In our paper, we use three popular datasets: CULane, Tusimple and LLAMAS
+ In our paper, we use CULane to evaluate the O2SFormer
   
 Please download [CULane](https://xingangpan.github.io/projects/CULane.html) dataset. Unzip data to `$CULANEROOT` and then create `$data` directory
   
