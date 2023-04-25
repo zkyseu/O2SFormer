@@ -8,8 +8,6 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
 ![Overview](fig/4.png "Overview")
 
 ## Model Zoo
-Pretrain weight is under preparing. 
-
 ### Results on CULane
 <table>
   <thead>
