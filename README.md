@@ -17,7 +17,7 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
       <th>backbone</th>
       <th>F1 score</th>
       <th>Checkpoint</th>
-      <th>Where in <a href="https://arxiv.org/abs/2203.03605">Our Paper</a></th>
+      <th>Where in Our Paper</a></th>
     </tr>
   </thead>
   <tbody>
