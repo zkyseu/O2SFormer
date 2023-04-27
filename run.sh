@@ -1,1 +1,2 @@
-python train_net.py configs/resnet_18_culane.py
+CONFIG=$1
+python train_net.py $CONFIG
