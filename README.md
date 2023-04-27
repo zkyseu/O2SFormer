@@ -5,6 +5,7 @@ Pytorch implementation of our paper "End-to-End Lane detection with One to Sever
 [2023/4/17]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture.
 
 # Overview
+Abstract: Lane detection methods have shown impressive performance in real-world scenarios. Most of methods require post-processing such as NMS, which is not robust enough. Therefore, end-to-end detectors like DEtection TRansformer(DETR) have been introduced in lane detection. However, one-to-one label assignment in DETR can degrade the training efficiency due to label semantic conflicts. Besides, positional query in DETR is unable to provide explicit positional prior, making it difficult to be optimized. In this paper, we present the One-to-Several Transformer(O2SFormer). We first propose the one-to-several label assignment, which combines one-to-one and one- to-many label assignments to improve the training efficiency while keeping end-to-end detection. To overcome the difficulty in optimizing one-to-one assignment. We further propose the layer-wise soft label which adjusts the positive weight of positive lane anchors across different decoder layers. Finally, we design the dynamic anchor-based positional query to explore positional prior by incorporating lane anchors into positional query. Experimental results show that O2SFormer significantly speed up the convergence of DETR and outperforms Transformer-based and CNN-based detectors on CULane dataset.
 ![Overview](fig/4.png "Overview")
 
 ## Model Zoo
