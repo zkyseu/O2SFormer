@@ -1,1 +1,4 @@
-python test.py configs/resnet_18_culane.py output_dir/latest.pth --eval bbox
+CONFIG=$1
+CHECKPOINT=$2
+
+python test.py $CONFIG $CHECKPOINT --eval bbox
