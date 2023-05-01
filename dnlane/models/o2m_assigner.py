@@ -56,13 +56,24 @@ class One2ManyLaneAssigner(BaseAssigner):
                targets: Tensor,
                img_w,
                img_h,):
+        """
+        Args:
+            predictions: prediction result
+            targets: ground truth
+            img_w: image width
+            img_h: image height
+        return:
+            ota_matched_row_inds: prediction assigned by OTA
+            ota_matched_col_inds: groud truth associated with predictions
+            final_match_row_inds: prediction assigned by one to one assignment
+            final_match_col_inds: groud truth associated with predictions assigned by one to one assignment
+        """
         hugpredictions = predictions.detach().clone()
         predictions = predictions.detach().clone()
         predictions[:, 3] *= (img_w - 1)
         predictions[:, 6:] *= (img_w - 1)
 
         # classification cost and distance cost
-#        pair_wise_iou = line_iou(predictions[..., 6:].clone(), targets[..., 6:].clone(), img_w, aligned=False)
         cls_cost = self.cls_cost(predictions[:, :2], targets[:, 1].long())
         distance_cost = self.distance_cost(predictions,targets,img_w,img_h)
         cost = cls_cost+ distance_cost
@@ -80,7 +91,7 @@ class One2ManyLaneAssigner(BaseAssigner):
             cls_col = ota_matched_col_inds==cls # label index
             cls_row = ota_matched_row_inds[cls_col] # pred index
             cost_cls = cost[cls_row][:,cls]
-            assign_min_cost,indice = torch.min(cost_cls,dim = 0) # 二分图匹配
+            assign_min_cost,indice = torch.min(cost_cls,dim = 0) # one-to-one assignment 
             index_coord = torch.nonzero((aux_cost==assign_min_cost).int())
             row_inds = index_coord[0][0]
             final_match_row_inds[cls] = row_inds
