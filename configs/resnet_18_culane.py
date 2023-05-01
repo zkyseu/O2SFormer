@@ -123,7 +123,7 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
 
 # learning policy
-max_epochs = 50
+max_epochs = 20
 runner = dict(
     type='EpochBasedRunner', max_epochs=max_epochs)
 
