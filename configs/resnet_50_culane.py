@@ -117,7 +117,7 @@ model = dict(
     )
 
 # optimizer
-base_lr = 0.0002
+base_lr = 0.00025
 interval = 1
 eval_step = 1
 optimizer = dict(
@@ -130,7 +130,7 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
 
 # learning policy
-max_epochs = 50
+max_epochs = 20
 runner = dict(
     type='EpochBasedRunner', max_epochs=max_epochs)
 
