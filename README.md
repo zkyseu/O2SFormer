@@ -158,5 +158,5 @@ We take the O2SFormer with ResNet34 as an example. You first download the weight
 </details>
 
 ## Acknowledgement
-* Our project is based on mmdetection and CLRNet. Thanks for their great work!
-* We also thank the PaddleDetection for providing the code of HybridEncoder.
+* Our project is based on [mmdetection](https://github.com/open-mmlab/mmdetection) and [CLRNet](https://github.com/Turoad/CLRNet). Thanks for their great work!
+* We also thank the [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection) for providing the code of HybridEncoder.
