@@ -110,7 +110,7 @@ model = dict(
     )
 
 # optimizer
-base_lr = 0.0001
+base_lr = 0.00025
 interval = 1
 eval_step = 1
 optimizer = dict(
