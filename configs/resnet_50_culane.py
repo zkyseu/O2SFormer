@@ -20,12 +20,6 @@ model = dict(
     num_patterns=0,
     max_lanes = num_classes,
     num_feat_layers = 3,
-#    backbone=dict(
-#        type='mmcls.TIMMBackbone',
-#        model_name='swsl_resnet18',
-#        features_only=True,
-#        pretrained=True,
-#        out_indices=(1, 2, 3, 4)),
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -105,15 +99,6 @@ model = dict(
         test_cfg = dict(conf_threshold=0.5)),
      train_cfg = None,
      test_cfg = None
-    # training and testing settings
-    # train_cfg=dict(
-    #     assigner=dict(
-    #         type='HungarianAssigner',
-    #         match_costs=[
-    #             dict(type='FocalLossCost', weight=2., eps=1e-8),
-    #             dict(type='BBoxL1Cost', weight=5.0, box_format='xywh'),
-    #             dict(type='IoUCost', iou_mode='giou', weight=2.0)
-    #         ])),
     )
 
 # optimizer
