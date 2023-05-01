@@ -86,6 +86,12 @@ Note: * represents that we replace the encoder with HybridEncoder in RT-DETR, wh
    pip install -r requirements.txt
    # Note: If you meet errors when install mmdetection or mmcv, we suggset you can refer to mmdetection repo for more details
    ```
+   
+   4. Fix errors caused by PReLU in MMCV
+   ```sh
+   vim /path/mmcv/cnn/bricks/transformer.py
+   ```
+   Then, following [pull request in MMCV](https://github.com/open-mmlab/mmcv/pull/2444/commits/4290c68f653f63e96f022f330ceb71b578ee602d) to solve this problem.
 
 </details>
 
