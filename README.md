@@ -168,3 +168,19 @@ We take the O2SFormer with ResNet34 as an example. You first download the weight
 ## Acknowledgement
 * Our project is based on [mmdetection](https://github.com/open-mmlab/mmdetection) and [CLRNet](https://github.com/Turoad/CLRNet). Thanks for their great work!
 * We also thank the [PaddleDetection](https://github.com/PaddlePaddle/PaddleDetection) for providing the code of HybridEncoder.
+
+## LICNESE
+O2SFormer is released under the Apache 2.0 license. Please see the [LICENSE](https://github.com/zkyseu/O2SFormer/blob/main/LICENSE) file for more information.
+
+## Citation
+If you find our work helpful for your research, please consider citing the following BibTeX entry.   
+```bibtex
+@misc{zhou2023o2sformer,
+      title={End to End Lane detection with One-to-Several Transformer}, 
+      author={Kunyang Zhou and Rui Zhou},
+      year={2023},
+      eprint={2305.00675},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
