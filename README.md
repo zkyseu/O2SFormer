@@ -1,9 +1,10 @@
 <div align=center><img src="fig/O2SFormer.png"></div>
 
 # O2SFormer
-Pytorch implementation of our paper "End-to-End Lane detection with One to Several Transformer". Arxiv paper will be updated soon.
+Pytorch implementation of our paper [End-to-End Lane detection with One to Several Transformer](https://arxiv.org/pdf/2305.00675.pdf).
 
 # News
+[2023/5/1]: We update the arxiv paper.
 [2023/5/1]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture.
 
 # Overview
