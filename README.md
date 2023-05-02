@@ -5,6 +5,7 @@ Pytorch implementation of our paper [End-to-End Lane detection with One to Sever
 
 # News
 [2023/5/1]: We update the arxiv paper.
+
 [2023/5/1]: We release the code of O2SFormer, a SOTA lane detection method with DETR like architecture.
 
 # Overview
