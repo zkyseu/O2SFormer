@@ -136,16 +136,16 @@ $CULANEROOT/list                 # data lists
 </details>
 
 <details>
-  <summary>2. Train the model for 50 epochs</summary>
+  <summary>2. Train the model for 20 epochs</summary>
 
-We use the O2SFormer trained for 50 epochs as an example to demonstrate how to train our model.
+We use the O2SFormer trained for 20 epochs as an example to demonstrate how to train our model.
 
 You can also train our model on a single process:
 ```sh
 bash train.sh /path/config
 ```
   
-You can run our model with multi-GPUs with following code:
+You can run our model on multi-GPUs with following code:
 ```sh
 bash dist_train.sh /path/config num_gpus
 ```
