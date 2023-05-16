@@ -1,7 +1,7 @@
 <div align=center><img src="fig/O2SFormer.png"></div>
 
 # O2SFormer
-Pytorch implementation of our paper [End-to-End Lane detection with One to Several Transformer](https://arxiv.org/pdf/2305.00675.pdf).
+Pytorch implementation of our paper [End-to-End Lane detection with One to Several Transformer](https://arxiv.org/pdf/2305.00675.pdf). We will merge the O2SFormer into [PPLanedet](https://github.com/zkyseu/PPlanedet), which is a lane detection toolbox based on PaddlePaddle.
 
 # News
 [2023/5/9]: We release the new version on arxiv.
