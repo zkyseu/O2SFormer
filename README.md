@@ -87,7 +87,7 @@ Note: * represents that we replace the encoder with HybridEncoder in RT-DETR, wh
 
    3. Install other needed packages
    ```sh
-   pip install -r requirements.txt
+   pip install -r requirement.txt
    # Note: If you meet errors when install mmdetection or mmcv, we suggset you can refer to mmdetection repo for more details
    ```
    
