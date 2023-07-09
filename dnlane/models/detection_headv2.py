@@ -242,7 +242,8 @@ class DNHeadv2(BaseModule):
 
     def loss_single_bs(self,predictions:Tensor,target:Tensor,matched_row_inds,matched_col_inds,assign_score):
         """
-        计算单个batch的损失, 因为直接计算整个batchsize会导致loss异常。
+        Compute the loss of single batch because loss will be NaN if we compute the whole batchsize directly.
+        Chinese: 计算单个batch的损失, 因为直接计算整个batchsize会导致loss异常。
         """
         cls_loss = 0
         reg_xytl_loss = 0
@@ -312,7 +313,8 @@ class DNHeadv2(BaseModule):
                          scale_factor = 1.,
                          line_iou = 1.):
         """
-        为每个layer分配pred score
+        Assign predicted score for each decoder layer
+        Chinese: 为每个layer分配pred score
         """
         assigned_score = prediction.new_zeros(prediction.size(0),dtype=torch.float)
         match_row_inds = match_row_inds.long()
