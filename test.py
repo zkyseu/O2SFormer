@@ -17,7 +17,7 @@ from mmdet.models import build_detector
 from mmdet.utils import (build_ddp, build_dp, compat_cfg, get_device,
                          replace_cfg_vals, rfnext_init_model,
                          setup_multi_processes, update_data_root)
-from .dnlane.apis import multi_gpu_test,single_gpu_test
+from dnlane.apis import multi_gpu_test,single_gpu_test
 import dnlane
 
 def parse_args():
